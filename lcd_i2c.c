@@ -1,18 +1,14 @@
-/*
- * lcd_i2c.c
- *
- * Created: 6/29/2021 7:38:17 PM
- *  Author: jlb
- */
 #include <avr/io.h>
 #include <util/delay.h>
 #include "i2c.h"
 #include "lcd_i2c.h"
+#include <stdarg.h>
+#include <stdio.h>
 
-#define PCF8574_ADDR 0x4E  // Si 0x27 es la dirección base, desplazada a la izquierda sería 0x4E para escritura
+#define PCF8574_ADDR 0x4E  
 
 
-char Columna_1 [2] = {0 , 64};	//Direcciones de la primera columna
+char Columna_1 [2] = {0 , 64};	
 
 
 /********************************************************
@@ -135,22 +131,15 @@ void lcd_i2c_col_row(uint8_t x, uint8_t y)
 	lcd_i2c_cmd(0x80 + Columna_1[y-1]+(x-1));
 }
 
-/********************************************************
-*	Limpia la pantalla
-*	Entrada: Nada
-*	Salida: Nada
-*********************************************************/
+
+
 void lcd_i2c_clr(void)
 {
-	lcd_i2c_cmd(0x01); //Limpia la pantalla (0000 0001)
+	lcd_i2c_cmd(0x01); 
 	_delay_ms(2);
 }
 
-/********************************************************
-*	Despliega una cadena de caracteres
-*	Entrada: Cadena de caracteres entre comillas (p.e. "Hola LCD..")
-*	Salida: Ninguna
-*********************************************************/
+
 void lcd_i2c_write_string(char *a)
 {
 	unsigned int i;
@@ -158,11 +147,7 @@ void lcd_i2c_write_string(char *a)
 	lcd_i2c_data(a[i]);
 }
 
-/********************************************************
-*	Escribe un valor entero
-*	Entrada: Valor a imprimir, longitud del valor a imprimir (1 a 5)
-*	Salida: Ninguna
-*********************************************************/
+
 void lcd_i2c_write_int(int value,unsigned int field_length)
 {
 	char str[5]={0,0,0,0,0};
@@ -182,4 +167,13 @@ void lcd_i2c_write_int(int value,unsigned int field_length)
 		{
 			lcd_i2c_data(48+str[i]);
 		}
+}
+void lcd_i2c_printf(const char *format, ...) {
+	char buffer[32];
+	va_list args;
+	va_start(args, format);
+	vsnprintf(buffer, sizeof(buffer), format, args);
+	va_end(args);
+	//lcd_i2c_printf(buffer);
+	lcd_i2c_write_string(buffer);
 }

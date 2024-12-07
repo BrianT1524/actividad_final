@@ -1,10 +1,3 @@
-/*
- * i2c.c
- *
- * Created: 6/29/2021 4:20:49 PM
- *  Author: jlb
- */ 
-
 #include <avr/io.h>
 #include <util/delay.h>
 #include "i2c.h"
@@ -41,4 +34,16 @@ uint8_t read_i2c()
 	TWCR = (1<<TWINT)|(1<<TWEN); //Lectura sin reconocimiento (TWEA=0)
 	while((TWCR & (1<<TWINT))==0); //Espera hasta que TWINT=0 (TWI termina su trabajo)
 	return TWDR; //Regresa el valor leído
+}
+
+uint8_t i2c_read_ack(void) {
+	TWCR = (1 << TWEN) | (1 << TWINT) | (1 << TWEA);
+	while (!(TWCR & (1 << TWINT))); 
+	return TWDR;
+}
+
+uint8_t i2c_read_nack(void) {
+	TWCR = (1 << TWEN) | (1 << TWINT);
+	while (!(TWCR & (1 << TWINT))); 
+	return TWDR;
 }

@@ -1,11 +1,3 @@
-/*
- * i2c.h
- *
- * Created: 6/29/2021 7:00:30 PM
- *  Author: jlb
- */ 
-
-
 #ifndef I2C_H_
 #define I2C_H_
 
@@ -14,6 +6,9 @@ uint8_t read_i2c();
 void write_i2c(uint8_t data);
 void start(void);
 void stop(void);
+
+uint8_t i2c_read_ack(void);
+uint8_t i2c_read_nack(void);
 
 #define TRUE 1
 #define FALSE 0
